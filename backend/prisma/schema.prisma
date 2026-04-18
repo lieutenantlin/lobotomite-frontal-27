@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  researcher
+  viewer
+}
+
+enum DeviceStatus {
+  active
+  inactive
+  maintenance
+}
+
+enum SampleSource {
+  edge
+  manual
+  imported
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         UserRole   @default(viewer)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  samples      Sample[]
+  auditLogs    AuditLog[]
+}
+
+model Device {
+  id              String       @id @default(uuid())
+  deviceId        String       @unique
+  label           String
+  status          DeviceStatus @default(active)
+  firmwareVersion String?
+  modelVersion    String?
+  lastSeenAt      DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  samples         Sample[]
+}
+
+model Sample {
+  id                   String       @id @default(uuid())
+  sampleId             String       @unique
+  device               Device       @relation(fields: [deviceId], references: [id])
+  deviceId             String
+  capturedAt           DateTime
+  receivedAt           DateTime     @default(now())
+  latitude             Float
+  longitude            Float
+  microplasticEstimate Float
+  unit                 String
+  confidence           Float
+  modelVersion         String
+  qualityScore         Float?
+  notes                String?
+  imageObjectKey       String?
+  thumbnailObjectKey   String?
+  source               SampleSource @default(edge)
+  createdByUser        User?        @relation(fields: [createdByUserId], references: [id])
+  createdByUserId      String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  tags                 SampleTag[]
+}
+
+model SampleTag {
+  id       String @id @default(uuid())
+  sample   Sample @relation(fields: [sampleId], references: [id], onDelete: Cascade)
+  sampleId String
+  tag      String
+
+  @@unique([sampleId, tag])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUser   User?    @relation(fields: [actorUserId], references: [id])
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+}
