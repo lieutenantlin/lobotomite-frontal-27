@@ -1,8 +1,12 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
+
+const configDir = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: "/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/frontend",
+    root: configDir,
   },
 };
 

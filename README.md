@@ -35,8 +35,8 @@ The product theme in the codebase is "Aqua Graph": devices ingest sample measure
 
 ### Infrastructure
 
-- Docker Compose for local Postgres and API container orchestration
-- Multi-stage Docker build for the backend service
+- Docker Compose for local Postgres, API, and frontend orchestration
+- Multi-stage Docker builds for the backend and frontend services
 
 ## Architecture
 
@@ -113,12 +113,47 @@ The frontend runs on `http://localhost:3000` by default and targets `http://loca
 
 ## Docker workflow
 
-The provided [`docker-compose.yml`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/docker-compose.yml) starts:
+The provided [`docker-compose.yml`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/docker-compose.yml) now starts:
 
-- `db`: Postgres 16
-- `api`: the backend service container
+- `db`: Postgres 16 with a persistent named volume
+- `api`: the Fastify backend on `http://localhost:3001`
+- `frontend`: the Next.js app on `http://localhost:3000`
 
-The frontend is not currently part of Compose, so it is expected to be run separately during development.
+Start the full stack from the repository root:
+
+```bash
+docker compose up --build
+```
+
+Start it in the background:
+
+```bash
+docker compose up -d --build
+```
+
+Stop it:
+
+```bash
+docker compose down
+```
+
+Persist the database and uploaded files:
+
+```bash
+docker compose down
+docker volume ls
+```
+
+Important detail: the frontend is a browser app, so its `NEXT_PUBLIC_API_BASE_URL` must point to a host-reachable address. In this compose setup it is intentionally set to `http://localhost:3001`, not `http://api:3001`, because the user's browser cannot resolve Docker's internal service DNS.
+
+If you need database schema and seed data after the containers are up, run:
+
+```bash
+cd backend
+npm install
+npm run db:push
+npm run db:seed
+```
 
 ## Seed credentials
 
