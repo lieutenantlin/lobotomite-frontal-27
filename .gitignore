@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+uploads/
+.DS_Store
+CLAUDE.md
+frontend_spec.md
+backend_spec.md
+datahacksplan.md
