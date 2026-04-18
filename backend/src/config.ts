@@ -10,10 +10,21 @@ function optional(key: string, fallback: string): string {
   return env[key] ?? fallback;
 }
 
+function optionalList(key: string): string[] {
+  const val = env[key];
+  if (!val) return [];
+
+  return val
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export const config = {
   port: parseInt(optional('PORT', '3001'), 10),
   nodeEnv: optional('NODE_ENV', 'development'),
   databaseUrl: optional('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/microplastics'),
+  corsOrigins: optionalList('CORS_ORIGINS'),
   jwt: {
     secret: optional('JWT_SECRET', 'dev-secret-change-in-production'),
     expiresIn: optional('JWT_EXPIRES_IN', '7d'),

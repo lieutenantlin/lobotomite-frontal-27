@@ -28,6 +28,7 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/microplastics
       NODE_ENV: production
       PORT: 3001
+      CORS_ORIGINS: http://localhost:3000
     ports:
       - "3001:3001"
     depends_on:
