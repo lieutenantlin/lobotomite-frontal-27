@@ -51,7 +51,7 @@ export default function LandingPage() {
                 Real-Time <span className="gradient-text">Microplastic Detection</span> from Field to Dashboard.
               </h1>
               <p className="font-body text-base text-on-surface-variant mb-10 max-w-lg leading-relaxed">
-                An end-to-end system combining iPhone microscopy, Arduino edge AI, and live web dashboards to map synthetic polymer contamination in water sources globally.
+                An end-to-end system combining iPhone microscopy, Arduino UNO Q edge inference, and AWS-powered cloud ingestion to map microplastic contamination in water sources.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/login" className="bg-primary text-on-primary font-label text-xs font-bold uppercase tracking-widest px-8 py-4 rounded border border-primary shadow-lg hover:bg-primary-container transition-all text-center">Explore Dashboard</Link>
@@ -107,7 +107,7 @@ export default function LandingPage() {
                   <div className="absolute top-2 left-2 font-label text-[9px] text-outline font-bold bg-white/80 px-2 py-1 border border-outline-variant/30">PLACEHOLDER_IMG</div>
                 </div>
                 <div className="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                  <span className="font-label text-[10px] font-bold text-primary uppercase">iOS App / CoreML</span>
+                  <span className="font-label text-[10px] font-bold text-primary uppercase">iOS App / AVFoundation + CoreLocation</span>
                   <span className="font-label text-[10px] text-outline-variant">LAYER_01</span>
                 </div>
               </div>
@@ -143,7 +143,7 @@ void run_inference(uint8_t* frame) {
                   <span className="material-symbols-outlined">cloud_upload</span>
                 </div>
                 <h3 className="font-headline text-lg font-bold mb-3 text-on-surface">03. Cloud Ingest</h3>
-                <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6">Results POST to the REST API with sample metadata, image object key, and device ID. Idempotent upsert by sampleId ensures reliable delivery even on flaky field connections.</p>
+                <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6">The Arduino UNO Q publishes inference results and device metadata to AWS IoT Core via MQTT. An IoT Rule triggers a Lambda function to validate and write records to DynamoDB. The iPhone uploads sample images directly to S3 via presigned URL — keeping binary data out of the device ingest path.</p>
                 <div className="relative rounded overflow-hidden bg-surface-container border border-outline-variant/30 aspect-[16/9] flex items-center justify-center mb-6 cursor-pointer hover:border-primary/30 transition-colors">
                   <div className="absolute inset-0 blueprint-bg pointer-events-none"></div>
                   <div className="relative z-10 text-center px-4">
@@ -153,7 +153,7 @@ void run_inference(uint8_t* frame) {
                   <div className="absolute top-2 left-2 font-label text-[9px] text-outline font-bold bg-white/80 px-2 py-1 border border-outline-variant/30">PLACEHOLDER_IMG</div>
                 </div>
                 <div className="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                  <span className="font-label text-[10px] font-bold text-primary uppercase">Fastify + PostgreSQL</span>
+                  <span className="font-label text-[10px] font-bold text-primary uppercase">AWS IoT Core / Lambda / DynamoDB + S3</span>
                   <span className="font-label text-[10px] text-outline-variant">LAYER_03</span>
                 </div>
               </div>
@@ -293,7 +293,7 @@ void run_inference(uint8_t* frame) {
                 <span className="font-label text-[10px] font-bold tracking-widest text-primary uppercase">OPEN_SOURCE // COMMUNITY_DRIVEN</span>
               </div>
               <h2 className="font-headline text-3xl font-bold mb-4 text-on-surface leading-tight">Start Monitoring Your Water Source.</h2>
-              <p className="font-body text-on-surface-variant max-w-lg leading-relaxed">Deploy an AquaScan node with off-the-shelf hardware. Connect to the dashboard. Contribute to a global open dataset of microplastic contamination.</p>
+              <p className="font-body text-on-surface-variant max-w-lg leading-relaxed">Pair an iPhone and Arduino UNO Q to collect and analyze water samples in the field. Results upload to AWS in real time and appear on the live contamination map.</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
               <Link href="/login" className="bg-primary text-on-primary font-label text-xs font-bold uppercase tracking-widest px-8 py-4 rounded border border-primary shadow-lg hover:bg-primary-container transition-all text-center">Deploy a Node</Link>
