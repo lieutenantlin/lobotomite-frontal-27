@@ -14,7 +14,7 @@ export function KpiCard({
   detail: string;
 }) {
   return (
-    <Card className="surface rounded-[2rem] border-0">
+    <Card className="surface rounded-[2rem] border-0 transition-all duration-200 hover:scale-[1.01] hover:shadow-lg">
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <div>
           <p className="eyebrow">{label}</p>

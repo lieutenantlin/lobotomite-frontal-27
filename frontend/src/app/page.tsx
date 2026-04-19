@@ -21,12 +21,12 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <nav className="fixed top-0 w-full z-50 bg-[#f6fafb]/80 backdrop-blur-xl border-b border-[#f0f4f5]">
         <div className="flex justify-between items-center px-12 py-4 max-w-[1440px] mx-auto">
-          <div className="text-xl font-bold tracking-tight text-[#006383] uppercase font-headline">AQUASCAN_AI.v1.0</div>
+          <div className="text-xl font-bold tracking-tight text-[#006383] font-headline">limpid</div>
           <div className="hidden md:flex gap-8 items-center font-label text-xs">
             <a className="text-[#006383] border-b border-[#006383] pb-1" href="#">PLATFORM</a>
-            <a className="text-[#5c6264] hover:text-[#006383] transition-colors cursor-pointer" href="#how-it-works">HOW_IT_WORKS</a>
-            <a className="text-[#5c6264] hover:text-[#006383] transition-colors cursor-pointer" href="#data-map">DATA_MAP</a>
-            <a className="text-[#5c6264] hover:text-[#006383] transition-colors cursor-pointer" href="#">API_DOCS</a>
+            <a className="text-[#5c6264] hover:text-[#006383] border-b border-transparent pb-1 hover:border-[#006383] transition-colors cursor-pointer" href="#how-it-works">HOW_IT_WORKS</a>
+            <a className="text-[#5c6264] hover:text-[#006383] border-b border-transparent pb-1 hover:border-[#006383] transition-colors cursor-pointer" href="#data-map">DATA_MAP</a>
+            <a className="text-[#5c6264] hover:text-[#006383] border-b border-transparent pb-1 hover:border-[#006383] transition-colors cursor-pointer" href="#">API_DOCS</a>
           </div>
           <div className="flex gap-4">
             <Link href="/login" className="text-[10px] font-label font-bold uppercase tracking-widest text-primary border border-primary/20 px-4 py-2 rounded transition-colors hover:bg-primary/5">Login</Link>
@@ -42,7 +42,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full relative z-10">
 
             {/* Left copy */}
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 border border-primary/10 rounded mb-8">
                 <span className="material-symbols-outlined text-[14px] text-primary">terminal</span>
                 <span className="font-label text-[10px] font-bold tracking-widest text-primary uppercase">EDGE_AI: MICROPLASTIC_DETECTION</span>
@@ -60,7 +60,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right placeholder */}
-            <div className="lg:col-span-6 relative">
+            <div className="lg:col-span-6 relative animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-150">
               <div className="relative rounded-xl overflow-hidden bg-surface-container border border-outline-variant/50 clinical-shadow aspect-[4/3] flex items-center justify-center group cursor-pointer">
                 <div className="absolute inset-0 blueprint-bg pointer-events-none"></div>
                 <div className="relative z-10 text-center p-8">
@@ -85,14 +85,14 @@ export default function LandingPage() {
         <section id="how-it-works" className="bg-surface-container-low py-24 px-6 md:px-12 border-y border-outline-variant/20">
           <div className="max-w-[1440px] mx-auto">
             <div className="mb-16">
-              <h2 className="font-headline text-3xl font-bold mb-4 text-on-surface">The AquaScan Pipeline</h2>
+              <h2 className="font-headline text-3xl font-bold mb-4 text-on-surface">The Limpid Pipeline</h2>
               <p className="font-body text-on-surface-variant max-w-2xl">Four integrated layers transform a field water sample into actionable environmental contamination data.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
               {/* Step 01: Field Capture */}
-              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col">
+              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
                 <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center mb-6 text-primary">
                   <span className="material-symbols-outlined">photo_camera</span>
                 </div>
@@ -113,7 +113,7 @@ export default function LandingPage() {
               </div>
 
               {/* Step 02: Edge Inference */}
-              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col">
+              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-200">
                 <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center mb-6 text-primary">
                   <span className="material-symbols-outlined">memory</span>
                 </div>
@@ -138,7 +138,7 @@ void run_inference(uint8_t* frame) {
               </div>
 
               {/* Step 03: Cloud Ingest */}
-              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col">
+              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-300">
                 <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center mb-6 text-primary">
                   <span className="material-symbols-outlined">cloud_upload</span>
                 </div>
@@ -159,7 +159,7 @@ void run_inference(uint8_t* frame) {
               </div>
 
               {/* Step 04: Dashboard & Map */}
-              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col">
+              <div className="bg-surface-container-lowest p-6 rounded border border-outline-variant/30 flex flex-col animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-[400ms]">
                 <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center mb-6 text-primary">
                   <span className="material-symbols-outlined">map</span>
                 </div>
@@ -308,10 +308,10 @@ void run_inference(uint8_t* frame) {
       <footer className="bg-on-surface text-white w-full py-12 px-12 border-t border-outline/20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start max-w-[1440px] mx-auto">
           <div>
-            <div className="text-lg font-bold text-primary-fixed mb-4 font-headline uppercase tracking-tighter">AquaScan_Platform_Lab</div>
+            <div className="text-lg font-bold text-primary-fixed mb-4 font-headline uppercase tracking-tighter">Limpid_Platform_Lab</div>
             <p className="font-body text-xs text-secondary-fixed-dim max-w-sm mb-6">Open-source tools for planetary-scale microplastic detection and remediation monitoring. Built at DataHacks 2026.</p>
             <div className="font-label text-[10px] tracking-widest uppercase text-outline-variant">
-              © 2026 AQUASCAN_AI // BUILD: 0xB3E1
+              © 2026 LIMPID // BUILD: 0xB3E1
             </div>
           </div>
           <div className="grid grid-cols-2 gap-8 font-label text-[10px] tracking-widest uppercase">

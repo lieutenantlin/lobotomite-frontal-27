@@ -71,7 +71,7 @@ export default function AdminPage() {
   const overview = overviewQuery.data;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {[
           ["Total users", overview.totalUsers],
