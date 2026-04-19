@@ -60,7 +60,7 @@ export function LoginPageClient() {
 
   return (
     <main className="grid min-h-screen gap-6 p-4 lg:grid-cols-[1.2fr_0.8fr] lg:p-6">
-      <section className="surface relative overflow-hidden rounded-[2.5rem] px-6 py-8 lg:px-10 lg:py-10">
+      <section className="surface relative overflow-hidden rounded-[2.5rem] px-6 py-8 lg:px-10 lg:py-10 animate-in fade-in-0 duration-500">
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-br from-primary/20 via-accent/25 to-transparent" />
         <div className="relative flex h-full flex-col justify-between gap-10">
           <div className="flex items-center justify-between">
@@ -99,7 +99,7 @@ export function LoginPageClient() {
           </div>
         </div>
       </section>
-      <section className="flex items-center justify-center">
+      <section className="flex items-center justify-center animate-in fade-in-0 duration-500 delay-150">
         <Card className="surface w-full max-w-md rounded-[2rem] border-0 py-0">
           <CardHeader className="px-6 pt-6">
             <p className="eyebrow">Authenticated access</p>
