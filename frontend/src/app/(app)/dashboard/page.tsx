@@ -41,7 +41,7 @@ export default function DashboardPage() {
   const stats = statsQuery.data;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           icon={Droplets}
@@ -156,7 +156,7 @@ export default function DashboardPage() {
             <Link
               key={sample.id}
               href={`/samples/${sample.id}`}
-              className="rounded-[1.5rem] border border-border/60 bg-background/55 p-4 hover:border-primary/40"
+              className="rounded-[1.5rem] border border-border/60 bg-background/55 p-4 hover:border-primary/50 transition-colors duration-200"
             >
               <div className="flex items-center justify-between gap-2">
                 <p className="font-semibold">{sample.sampleId}</p>
