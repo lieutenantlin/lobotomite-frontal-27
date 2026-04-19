@@ -47,7 +47,7 @@ export default function SampleDetailPage() {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
       <Link href="/samples" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="size-4" />
         Back to samples

@@ -47,7 +47,7 @@ export default function DevicesPage() {
   }
 
   return (
-    <Card className="surface rounded-[2rem] border-0">
+    <Card className="surface rounded-[2rem] border-0 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
       <CardHeader>
         <p className="eyebrow">Fleet overview</p>
         <CardTitle className="mt-2 text-xl">Device registry</CardTitle>

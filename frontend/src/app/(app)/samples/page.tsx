@@ -84,7 +84,7 @@ export default function SamplesPage() {
   const response = samplesQuery.data;
   if (!response || response.data.length === 0) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
         <Filters filters={filters} onChange={setFilters} />
         <EmptyState
           icon={Database}
