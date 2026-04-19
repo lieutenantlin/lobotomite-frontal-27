@@ -1,42 +1,88 @@
 # lobotomite-frontal-27
 
-Microplastics monitoring platform built for DataHacks 2026. The repository is split into:
+Microplastics monitoring platform built for DataHacks 2026. The repository contains:
 
-- `frontend/`: a Next.js dashboard for researchers and admins
 - `backend/`: a Fastify API backed by PostgreSQL via Prisma
+- `frontend/`: a Next.js dashboard for researchers and admins (built)
 
 The product theme in the codebase is "Aqua Graph": devices ingest sample measurements, the API stores them, and the frontend visualizes them in dashboards, tables, and a map.
 
-## Tech stack
+## System Architecture
 
-### Frontend
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           Aqua Graph Platform                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌─────────────┐    ┌──────────────┐    ┌─────────────────────────┐  │
+│  │   iPhone    │    │  Arduino UNO  │    │      Backend API        │  │
+│  │   (Camera)  │───▶│  (Edge AI)   │───▶│   (Fastify + Prisma)    │  │
+│  └─────────────┘    └──────────────┘    └───────────┬─────────────┘  │
+│                                                       │                 │
+│                                                       ▼                 │
+│                                              ┌─────────────────────┐    │
+│                                              │   PostgreSQL DB     │    │
+│                                              │   (Prisma ORM)      │    │
+│                                              └─────────────────────┘    │
+│                                                                         │
+│                                              ┌─────────────────────┐    │
+│                                              │   Storage Layer     │    │
+│                                              │   (Local or S3)     │    │
+│                                              └─────────────────────┘    │
+│                                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                         Frontend (Next.js)                      │   │
+│  │  ┌──────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐  │   │
+│  │  │Dashboard │ │  Map   │ │Samples │ │Devices │ │   Admin    │  │   │
+│  │  └──────────┘ └────────┘ └────────┘ └────────┘ └────────────┘  │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- shadcn/Base UI component primitives
-- TanStack Query for client-side data fetching and caching
-- React Hook Form + Zod for form handling and validation
-- Recharts for dashboard charts
-- Leaflet + React Leaflet for map rendering
+## Data Flow
+
+1. **Ingest**: Edge devices (Arduino + iPhone) send sample payloads to `/ingest/*` endpoints
+2. **Store**: API validates payloads with Zod, Prisma persists to PostgreSQL
+3. **Display**: Frontend fetches data via TanStack Query and visualizes in dashboards/maps
+
+## Tech Stack
+
+### Frontend (Built)
+
+| Technology | Purpose |
+|------------|---------|
+| Next.js 16 | App Router, server-side rendering |
+| React 19 | UI framework |
+| TypeScript | Type safety |
+| Tailwind CSS 4 | Styling with custom OKLCH theme |
+| shadcn/Base UI | Component primitives |
+| TanStack Query | Server state management |
+| React Hook Form + Zod | Form handling and validation |
+| Recharts | Dashboard charts |
+| Leaflet + React Leaflet | Map rendering |
+| Lucide React | Icon library |
 
 ### Backend
 
-- Node.js 20
-- Fastify 4
-- TypeScript
-- Prisma ORM
-- PostgreSQL 16
-- Zod for request validation
-- JWT + `bcrypt` for authentication
-- Optional S3-backed object storage, with a local filesystem provider for development
-- Vitest for backend tests
+| Technology | Purpose |
+|------------|---------|
+| Node.js 20 | Runtime |
+| Fastify 4 | HTTP server |
+| TypeScript | Type safety |
+| Prisma ORM | Database access |
+| PostgreSQL 16 | Database |
+| Zod | Request validation |
+| JWT + bcrypt | Authentication |
+| Vitest | Testing |
 
 ### Infrastructure
 
-- Docker Compose for local Postgres, API, and frontend orchestration
-- Multi-stage Docker builds for the backend and frontend services
+| Technology | Purpose |
+|------------|---------|
+| Docker Compose | Local orchestration |
+| Docker | Containerization |
+| Multi-stage builds | Optimized images |
 
 ## Architecture
 
@@ -56,24 +102,63 @@ The product theme in the codebase is "Aqua Graph": devices ingest sample measure
 4. Protected pages under `src/app/(app)` are wrapped in an auth guard and shared app shell.
 5. Dashboard, sample, device, map, and admin screens are rendered from API data.
 
-## Repository layout
+## Repository Layout
 
-```text
+```
 .
-├── backend/
-│   ├── prisma/             # Prisma schema and seed script
+├── .claude/                  # Claude Code configuration
+│   └── CLAUDE.md             # OMC agent orchestration rules
+├── backend/                  # Fastify API server
+│   ├── prisma/
+│   │   ├── schema.prisma     # Database schema
+│   │   └── seed.ts          # Demo data
 │   ├── src/
-│   │   ├── middleware/     # JWT auth and role guards
-│   │   ├── routes/         # Fastify route modules
-│   │   ├── services/       # Domain logic for samples, devices, auth, audit
-│   │   ├── storage/        # Local and S3 storage providers
-│   │   └── tests/          # Vitest route tests
-│   └── Dockerfile
-├── frontend/
-│   ├── src/app/            # Next.js App Router pages and layouts
-│   ├── src/components/     # App shell, auth, map, dashboard, and UI components
-│   └── src/lib/            # API client, auth helpers, types, formatting utils
-└── docker-compose.yml
+│   │   ├── app.ts           # Fastify app composition
+│   │   ├── server.ts        # Entry point
+│   │   ├── config.ts        # Environment configuration
+│   │   ├── lib/
+│   │   │   └── prisma.ts    # Prisma client singleton
+│   │   ├── plugins/         # CORS, sensible
+│   │   ├── middleware/
+│   │   │   └── authenticate.ts  # JWT auth & role guards
+│   │   ├── routes/          # API route modules
+│   │   │   ├── health.ts    # GET /health
+│   │   │   ├── auth.ts      # POST /auth/*, GET /auth/me
+│   │   │   ├── ingest.ts    # POST /ingest/*
+│   │   │   ├── samples.ts   # CRUD /samples
+│   │   │   ├── devices.ts   # CRUD /devices
+│   │   │   ├── stats.ts     # GET /stats/*
+│   │   │   └── admin.ts     # Admin user/audit routes
+│   │   ├── services/        # Business logic
+│   │   ├── storage/         # Storage abstraction (local/S3)
+│   │   └── tests/           # Vitest tests
+│   ├── Dockerfile
+│   └── package.json
+├── frontend/                # Next.js dashboard
+│   ├── src/
+│   │   ├── app/             # App Router pages
+│   │   │   ├── layout.tsx   # Root layout
+│   │   │   ├── page.tsx    # Landing page
+│   │   │   ├── login/       # Login flow
+│   │   │   └── (app)/       # Protected routes
+│   │   │       ├── dashboard/
+│   │   │       ├── map/
+│   │   │       ├── samples/
+│   │   │       ├── devices/
+│   │   │       └── admin/
+│   │   ├── components/      # React components
+│   │   │   ├── ui/          # shadcn components
+│   │   │   ├── auth/        # Auth guards & providers
+│   │   │   ├── app-shell.tsx
+│   │   │   └── ...
+│   │   └── lib/             # API client, types, utils
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yml        # Full stack orchestration
+├── README.md                # This file
+├── backend_spec.md          # Backend requirements
+├── frontend_spec.md         # Frontend requirements
+└── CLAUDE.md                # Claude Code guidance
 ```
 
 ## Local development

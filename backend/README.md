@@ -1,24 +1,66 @@
 # Backend
 
-Fastify + Prisma API for the Aqua Graph microplastics monitoring app.
+Fastify + Prisma API for the Aqua Graph microplastics monitoring platform.
 
-## Stack
+## Technology Stack
 
-- Fastify 4 for the HTTP server
-- TypeScript compiled with `tsc`
-- Prisma for PostgreSQL access
-- Zod for request validation
-- JWT bearer auth
-- `bcrypt` password hashing
-- Local filesystem or S3-compatible object storage abstraction
-- Vitest for route-level tests
+| Component | Technology | Version |
+|-----------|------------|---------|
+| Runtime | Node.js | 20.x |
+| HTTP Server | Fastify | 4.x |
+| Language | TypeScript | 5.x |
+| ORM | Prisma | latest |
+| Database | PostgreSQL | 16.x |
+| Validation | Zod | latest |
+| Auth | JWT + bcrypt | - |
+| Testing | Vitest | latest |
 
-## Entry points
+## Project Structure
 
-- [`src/server.ts`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/backend/src/server.ts): process bootstrap and graceful shutdown
-- [`src/app.ts`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/backend/src/app.ts): Fastify app composition
-- [`prisma/schema.prisma`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/backend/prisma/schema.prisma): relational schema
-- [`prisma/seed.ts`](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/backend/prisma/seed.ts): local seed data and demo users
+```
+backend/
+├── prisma/
+│   ├── schema.prisma        # Database schema
+│   └── seed.ts              # Demo data
+├── src/
+│   ├── app.ts              # Fastify instance composition
+│   ├── server.ts           # Entry point, graceful shutdown
+│   ├── config.ts           # Environment variables
+│   ├── lib/
+│   │   └── prisma.ts       # Prisma client singleton
+│   ├── plugins/            # @fastify/cors, @fastify/sensible
+│   ├── middleware/
+│   │   └── authenticate.ts # JWT auth & role authorization
+│   ├── routes/             # API endpoints
+│   │   ├── health.ts       # Health checks
+│   │   ├── auth.ts         # Authentication
+│   │   ├── ingest.ts       # Device data ingestion
+│   │   ├── samples.ts      # Sample CRUD
+│   │   ├── devices.ts      # Device CRUD
+│   │   ├── stats.ts        # Analytics endpoints
+│   │   └── admin.ts        # Admin operations
+│   ├── services/           # Business logic
+│   │   ├── authService.ts      # JWT & password handling
+│   │   ├── deviceService.ts   # Device management
+│   │   ├── sampleService.ts   # Sample operations
+│   │   └── auditService.ts    # Audit logging
+│   ├── storage/            # Storage abstraction
+│   │   ├── storageInterface.ts
+│   │   ├── localStorageProvider.ts
+│   │   └── s3StorageProvider.ts
+│   └── tests/              # Vitest test suite
+├── Dockerfile
+└── package.json
+```
+
+## Entry Points
+
+| File | Purpose |
+|------|---------|
+| [`src/server.ts`](src/server.ts) | Process bootstrap, signal handling, graceful shutdown |
+| [`src/app.ts`](src/app.ts) | Fastify app factory, plugin and route registration |
+| [`prisma/schema.prisma`](prisma/schema.prisma) | Relational schema definition |
+| [`prisma/seed.ts`](prisma/seed.ts) | Demo data generation |
 
 ## Scripts
 
@@ -85,41 +127,85 @@ Key modeling decisions:
 - image assets are not stored in the database, only object keys are
 - roles are enforced at the route layer through JWT middleware
 
-## Route groups
+## API Endpoints
 
-### Public or device-facing ingest routes
+### Health Check
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/health` | None | Returns app and database health status |
 
-- `POST /ingest/sample`
-- `POST /ingest/batch`
-- `POST /ingest/device-heartbeat`
+### Authentication
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/auth/register` | None | Register a new user |
+| POST | `/auth/login` | None | Login, returns JWT token |
+| POST | `/auth/logout` | Bearer | Invalidate session |
+| GET | `/auth/me` | Bearer | Get current user info |
 
-These endpoints validate payloads with Zod and write audit entries. Devices are auto-created on first ingest or heartbeat.
+### Device Ingestion (No Auth - Device Trust)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/ingest/sample` | None | Ingest single sample from edge device |
+| POST | `/ingest/batch` | None | Ingest multiple samples (up to 100) |
+| POST | `/ingest/device-heartbeat` | None | Update device status and version |
 
-### Auth routes
+**Ingest Request Schema:**
+```json
+{
+  "sampleId": "uuid",
+  "deviceId": "unoq-001",
+  "capturedAt": "2026-04-18T14:22:31Z",
+  "location": { "lat": 32.68, "lng": -117.18 },
+  "microplasticEstimate": 12.4,
+  "unit": "particles_per_ml",
+  "confidence": 0.87,
+  "modelVersion": "v1.3.0",
+  "qualityScore": 0.79,
+  "notes": "harbor edge sample",
+  "imageObjectKey": "samples/2026/04/18/uuid.jpg",
+  "thumbnailObjectKey": "samples/2026/04/18/uuid-thumb.jpg"
+}
+```
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/logout`
-- `GET /auth/me`
+### Samples (Authenticated)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/samples` | Bearer | List samples with pagination & filters |
+| GET | `/samples/:id` | Bearer | Get sample detail with signed image URLs |
+| PATCH | `/samples/:id` | researcher+ | Update sample notes/tags |
+| DELETE | `/samples/:id` | admin | Delete a sample |
 
-Passwords are hashed with `bcrypt`. JWTs are signed in `src/services/authService.ts` and enforced by `src/middleware/authenticate.ts`.
+**Query Parameters for `/samples`:**
+- `deviceId` - Filter by device
+- `source` - Filter by source (edge, manual, imported)
+- `from` / `to` - Date range filter
+- `page` / `limit` - Pagination (default: 20, max: 100)
 
-### Protected app routes
+### Devices (Authenticated)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/devices` | researcher+ | List all devices |
+| GET | `/devices/:id` | Bearer | Get device details |
+| PATCH | `/devices/:id` | admin | Update device label/status |
 
-- `GET /samples`
-- `GET /samples/:id`
-- `PATCH /samples/:id`
-- `DELETE /samples/:id`
-- `GET /devices`
-- `GET /devices/:id`
-- `PATCH /devices/:id`
-- `GET /stats/overview`
-- `GET /stats/by-device`
-- `GET /stats/timeseries`
-- `GET /admin/users`
-- `PATCH /admin/users/:id`
-- `DELETE /admin/users/:id`
-- `GET /admin/audit-log`
+### Statistics (Authenticated)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/stats/overview` | Bearer | Dashboard overview metrics |
+| GET | `/stats/by-device` | Bearer | Samples grouped by device |
+| GET | `/stats/timeseries` | Bearer | Time-series data with interval |
+
+**Query Parameters for `/stats/timeseries`:**
+- `from` / `to` - Date range
+- `interval` - Aggregation interval (day, week)
+
+### Administration (Admin Only)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/users` | List all users |
+| PATCH | `/admin/users/:id` | Update user role |
+| DELETE | `/admin/users/:id` | Delete user |
+| GET | `/admin/audit-log` | Query audit logs with filters |
 
 ## Auth and authorization
 

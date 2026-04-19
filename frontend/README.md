@@ -1,47 +1,78 @@
 # Frontend
 
-Next.js dashboard for the Aqua Graph microplastics monitoring system.
+Next.js dashboard for the Aqua Graph microplastics monitoring platform.
 
-## Stack
+## Technology Stack
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- shadcn/Base UI components
-- TanStack Query for client-side data fetching
-- React Hook Form + Zod for forms
-- Recharts for charts
-- Leaflet + React Leaflet for geospatial views
-- Lucide icons
+| Component | Technology | Version |
+|-----------|------------|---------|
+| Framework | Next.js | 16 (App Router) |
+| UI Library | React | 19 |
+| Language | TypeScript | 5.x |
+| Styling | Tailwind CSS | 4.x |
+| Components | shadcn/Base UI | - |
+| State | TanStack Query | 5.x |
+| Forms | React Hook Form + Zod | - |
+| Charts | Recharts | - |
+| Maps | Leaflet + React Leaflet | - |
+| Icons | Lucide React | - |
 
-## App structure
+## Project Structure
 
-### Route layout
+```
+frontend/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── layout.tsx          # Root layout, metadata, providers
+│   │   ├── page.tsx            # Landing page
+│   │   ├── login/
+│   │   │   ├── page.tsx        # Login page wrapper
+│   │   │   └── login-page-client.tsx  # Login form component
+│   │   └── (app)/              # Protected route group
+│   │       ├── layout.tsx      # App shell layout
+│   │       ├── dashboard/
+│   │       │   └── page.tsx    # Dashboard with KPIs & charts
+│   │       ├── map/
+│   │       │   └── page.tsx    # Interactive map view
+│   │       ├── samples/
+│   │       │   ├── page.tsx    # Sample list with filters
+│   │       │   └── [id]/
+│   │       │       └── page.tsx  # Sample detail view
+│   │       ├── devices/
+│   │       │   ├── page.tsx    # Device list
+│   │       │   └── [id]/
+│   │       │       └── page.tsx  # Device detail view
+│   │       └── admin/
+│   │           └── page.tsx   # Admin panel (admin only)
+│   ├── components/
+│   │   ├── ui/                 # shadcn/Base UI components
+│   │   ├── auth/
+│   │   │   ├── auth-provider.tsx   # Session management
+│   │   │   └── auth-guard.tsx     # Route protection
+│   │   ├── app-shell.tsx      # Sidebar, topbar, navigation
+│   │   └── ...                 # Page-specific components
+│   └── lib/
+│       ├── api.ts             # API client with fallback logic
+│       ├── auth.ts            # Token storage helpers
+│       ├── types.ts           # TypeScript definitions
+│       └── utils.ts           # Formatting utilities
+├── Dockerfile
+└── package.json
+```
 
-- `src/app/layout.tsx`: root layout, metadata, and global providers
-- `src/app/page.tsx`: top-level entry page
-- `src/app/login/*`: login route
-- `src/app/(app)/*`: authenticated application routes wrapped in the app shell
+## Route Structure
 
-Protected routes currently include:
-
-- `/dashboard`
-- `/map`
-- `/samples`
-- `/samples/[id]`
-- `/devices`
-- `/devices/[id]`
-- `/admin`
-
-### Shared client infrastructure
-
-- `src/components/providers.tsx`: creates the shared TanStack Query client
-- `src/components/auth/auth-provider.tsx`: session management and `auth/me` query
-- `src/components/auth/auth-guard.tsx`: redirects unauthenticated users to login
-- `src/components/app-shell.tsx`: sidebar, top bar, role-aware navigation, logout flow
-- `src/lib/api.ts`: fetch wrapper and API surface used by pages
-- `src/lib/auth.ts`: local storage token helpers
+| Route | Auth | Description |
+|-------|------|-------------|
+| `/` | None | Landing page |
+| `/login` | None | Login form |
+| `/dashboard` | Bearer | Overview with KPIs & trends |
+| `/map` | Bearer | Interactive map with markers |
+| `/samples` | Bearer | Paginated sample list |
+| `/samples/:id` | Bearer | Sample detail view |
+| `/devices` | Bearer | Device list |
+| `/devices/:id` | Bearer | Device detail view |
+| `/admin` | Admin | User management & audit log |
 
 ## Data and auth model
 
