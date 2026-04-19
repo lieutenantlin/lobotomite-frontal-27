@@ -24,6 +24,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getConfiguredAuthMode } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 const baseNavigation = [
@@ -44,7 +45,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   function handleLogout() {
     logout();
-    router.replace("/login");
+    if (getConfiguredAuthMode() === "local") {
+      router.replace("/login");
+    }
   }
 
   const navContent = (
@@ -58,7 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-3 rounded-2xl px-3 py-2 text-sm transition-colors",
+              "flex items-center gap-3 rounded-2xl px-3 py-2 text-sm transition-all duration-200",
               isActive
                 ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -77,12 +80,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="surface hidden rounded-[2rem] p-5 lg:flex lg:flex-col">
           <div className="mb-10 flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30">
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform duration-200 hover:scale-110">
               <Activity className="size-5" />
             </div>
             <div>
               <p className="eyebrow">Field Dashboard</p>
-              <h1 className="text-lg font-semibold">Aqua Graph</h1>
+              <h1 className="text-lg font-semibold">Limpid</h1>
             </div>
           </div>
           {navContent}
@@ -101,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex min-w-0 flex-col gap-4">
           <header className="surface flex items-center justify-between rounded-[2rem] px-4 py-3 lg:px-6">
             <div>
-              <p className="eyebrow">Microplastics Research Network</p>
+              <p className="eyebrow">Limpid Network</p>
               <h2 className="text-xl font-semibold">
                 {navigation.find((item) => pathname.startsWith(item.href))?.label ?? "Dashboard"}
               </h2>
@@ -123,7 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <SheetContent className="surface w-[min(22rem,calc(100vw-2rem))] rounded-[2rem] border border-border/60 p-5">
                   <SheetHeader className="mb-4 px-0 pt-0">
                     <p className="eyebrow">Navigation</p>
-                    <SheetTitle className="text-lg font-semibold">Aqua Graph</SheetTitle>
+                    <SheetTitle className="text-lg font-semibold">Limpid</SheetTitle>
                   </SheetHeader>
                   {navContent}
                   <div className="mt-6">

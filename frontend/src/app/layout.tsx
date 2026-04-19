@@ -5,7 +5,7 @@ import { Providers } from "@/components/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aqua Graph",
+  title: "Limpid",
   description: "Microplastics water quality monitoring dashboard",
 };
 
