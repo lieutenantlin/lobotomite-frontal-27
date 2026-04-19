@@ -99,7 +99,11 @@ export function isCognitoAuthEnabled() {
 }
 
 export function getStoredToken() {
-  return getStoredSession()?.accessToken ?? null;
+  const session = getStoredSession();
+  if (!session) return null;
+  // Cognito id tokens carry name/email claims; access tokens do not
+  if (session.mode === "cognito" && session.idToken) return session.idToken;
+  return session.accessToken;
 }
 
 export function setStoredToken(token: string) {
