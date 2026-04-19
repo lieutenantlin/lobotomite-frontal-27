@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { isCognitoAuthEnabled, startCognitoLogin } from "@/lib/auth";
 
 const loginSchema = z.object({
   email: z.email("Enter a valid email address."),
@@ -23,6 +24,7 @@ export function LoginPageClient() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isCognitoMode = isCognitoAuthEnabled();
   const {
     register,
     handleSubmit,
@@ -42,6 +44,16 @@ export function LoginPageClient() {
       router.replace(searchParams.get("next") ?? "/dashboard");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed.";
+      setError("root", { message });
+    }
+  }
+
+  async function handleHostedLogin() {
+    try {
+      await startCognitoLogin(searchParams.get("next") ?? "/dashboard");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unable to start Cognito sign-in.";
       setError("root", { message });
     }
   }
@@ -91,24 +103,43 @@ export function LoginPageClient() {
         <Card className="surface w-full max-w-md rounded-[2rem] border-0 py-0">
           <CardHeader className="px-6 pt-6">
             <p className="eyebrow">Authenticated access</p>
-            <CardTitle className="mt-2 text-2xl font-semibold">Sign in to Aqua Graph</CardTitle>
+            <CardTitle className="mt-2 text-2xl font-semibold">
+              {isCognitoMode ? "Continue with AWS Cognito" : "Sign in to Limpid"}
+            </CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-6">
             <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="email">
-                  Email
-                </label>
-                <Input id="email" type="email" placeholder="researcher@example.org" {...register("email")} />
-                {errors.email ? <p className="text-xs text-destructive">{errors.email.message}</p> : null}
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="password">
-                  Password
-                </label>
-                <Input id="password" type="password" {...register("password")} />
-                {errors.password ? <p className="text-xs text-destructive">{errors.password.message}</p> : null}
-              </div>
+              {isCognitoMode ? (
+                <div className="rounded-2xl border border-border/70 bg-background/70 px-4 py-3 text-sm text-muted-foreground">
+                  Authentication is handled by the Cognito hosted sign-in flow for AWS deployments.
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="email">
+                      Email
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="researcher@example.org"
+                      {...register("email")}
+                    />
+                    {errors.email ? (
+                      <p className="text-xs text-destructive">{errors.email.message}</p>
+                    ) : null}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="password">
+                      Password
+                    </label>
+                    <Input id="password" type="password" {...register("password")} />
+                    {errors.password ? (
+                      <p className="text-xs text-destructive">{errors.password.message}</p>
+                    ) : null}
+                  </div>
+                </>
+              )}
               {errors.root ? (
                 <div className="rounded-2xl border border-destructive/25 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                   <div className="flex items-center gap-2">
@@ -117,9 +148,20 @@ export function LoginPageClient() {
                   </div>
                 </div>
               ) : null}
-              <Button className="h-10 w-full rounded-xl" disabled={isSubmitting} type="submit">
-                {isSubmitting ? "Signing in..." : "Enter dashboard"}
-              </Button>
+              {isCognitoMode ? (
+                <Button
+                  className="h-10 w-full rounded-xl"
+                  disabled={isSubmitting}
+                  onClick={handleHostedLogin}
+                  type="button"
+                >
+                  Continue to Cognito
+                </Button>
+              ) : (
+                <Button className="h-10 w-full rounded-xl" disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "Signing in..." : "Enter dashboard"}
+                </Button>
+              )}
             </form>
           </CardContent>
         </Card>
