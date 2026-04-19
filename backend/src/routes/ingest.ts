@@ -1,9 +1,11 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import { randomUUID } from 'crypto';
 import { DeviceStatus } from '@prisma/client';
 import * as sampleService from '../services/sampleService.js';
 import * as deviceService from '../services/deviceService.js';
 import * as audit from '../services/auditService.js';
+import { getStorage } from '../storage/index.js';
 
 const sampleSchema = z.object({
   sampleId: z.string().uuid(),
@@ -29,6 +31,10 @@ const heartbeatSchema = z.object({
   firmwareVersion: z.string().optional(),
   modelVersion: z.string().optional(),
   status: z.nativeEnum(DeviceStatus).optional(),
+});
+
+const presignedUploadSchema = z.object({
+  filename: z.string().min(1).max(255),
 });
 
 export async function ingestRoutes(app: FastifyInstance) {
@@ -62,5 +68,14 @@ export async function ingestRoutes(app: FastifyInstance) {
     );
     audit.log(null, 'device.heartbeat', 'device', device.id, { deviceId: body.data.deviceId });
     return reply.send({ device: { deviceId: device.deviceId, status: device.status, lastSeenAt: device.lastSeenAt } });
+  });
+
+  app.post('/upload/presigned', async (request, reply) => {
+    const body = presignedUploadSchema.safeParse(request.body);
+    if (!body.success) return reply.status(400).send({ error: 'Validation failed', details: body.error.flatten() });
+
+    const objectKey = `samples/${randomUUID()}/${body.data.filename}`;
+    const uploadUrl = await getStorage().getSignedUploadUrl(objectKey);
+    return reply.send({ uploadUrl, objectKey });
   });
 }

@@ -46,3 +46,4 @@ samconfig.toml
 .omc/
 .omx/
 .claude/
+.sisyphus/
