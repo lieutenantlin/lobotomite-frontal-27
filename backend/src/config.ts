@@ -41,6 +41,7 @@ export const config = {
     bucket: optional('AWS_S3_BUCKET', 'microplastics-samples'),
     accessKeyId: env['AWS_ACCESS_KEY_ID'],
     secretAccessKey: env['AWS_SECRET_ACCESS_KEY'],
+    sessionToken: env['AWS_SESSION_TOKEN'],
     dynamodb: {
       samplesTable: optional('AWS_DDB_SAMPLES_TABLE', 'Samples'),
       devicesTable: optional('AWS_DDB_DEVICES_TABLE', 'Devices'),

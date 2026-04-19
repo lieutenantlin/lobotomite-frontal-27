@@ -60,10 +60,16 @@ export async function getSampleById(id: string): Promise<SampleRecord | null> {
 }
 
 export async function putSample(item: SampleRecord): Promise<SampleRecord> {
+  const { createdByUserId, ...rest } = item;
+  const storageItem = {
+    ...rest,
+    ...(createdByUserId == null ? {} : { createdByUserId }),
+  };
+
   await dynamo.send(
     new PutCommand({
       TableName: config.aws.dynamodb.samplesTable,
-      Item: item,
+      Item: storageItem,
     }),
   );
 

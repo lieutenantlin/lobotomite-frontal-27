@@ -9,6 +9,7 @@ const baseClient = new DynamoDBClient({
       ? {
           accessKeyId: config.aws.accessKeyId,
           secretAccessKey: config.aws.secretAccessKey,
+          sessionToken: config.aws.sessionToken,
         }
       : undefined,
 });

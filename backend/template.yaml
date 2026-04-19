@@ -21,7 +21,6 @@ Globals:
         APP_RUNTIME: aws
         NODE_ENV: production
         STORAGE_PROVIDER: s3
-        AWS_REGION: !Ref AWS::Region
         AWS_S3_BUCKET: !Ref SampleImagesBucket
         AWS_DDB_SAMPLES_TABLE: !Ref SamplesTable
         AWS_DDB_DEVICES_TABLE: !Ref DevicesTable

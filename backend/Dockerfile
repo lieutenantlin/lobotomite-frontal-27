@@ -11,6 +11,9 @@ RUN npm run build
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV APP_RUNTIME=local
+ENV STORAGE_PROVIDER=local
+ENV LOCAL_STORAGE_PATH=./uploads
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 RUN npm ci --omit=dev

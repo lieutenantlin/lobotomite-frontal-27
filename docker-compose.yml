@@ -1,3 +1,5 @@
+# Local Docker stack for the Fastify/Postgres development path.
+# The AWS Lambda/API Gateway stack is deployed with SAM, not with compose.
 services:
   db:
     image: postgres:16-alpine
@@ -28,6 +30,9 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/microplastics
       NODE_ENV: production
       PORT: 3001
+      APP_RUNTIME: local
+      STORAGE_PROVIDER: local
+      LOCAL_STORAGE_PATH: ./uploads
       CORS_ORIGINS: http://localhost:3000
     ports:
       - "3001:3001"
@@ -42,12 +47,24 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:3001}
+        NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
+        NEXT_PUBLIC_COGNITO_DOMAIN: ${NEXT_PUBLIC_COGNITO_DOMAIN:-}
+        NEXT_PUBLIC_COGNITO_CLIENT_ID: ${NEXT_PUBLIC_COGNITO_CLIENT_ID:-}
+        NEXT_PUBLIC_COGNITO_REDIRECT_URI: ${NEXT_PUBLIC_COGNITO_REDIRECT_URI:-http://localhost:3000/auth/callback}
+        NEXT_PUBLIC_COGNITO_LOGOUT_URI: ${NEXT_PUBLIC_COGNITO_LOGOUT_URI:-http://localhost:3000/login}
+        NEXT_PUBLIC_COGNITO_SCOPE: ${NEXT_PUBLIC_COGNITO_SCOPE:-openid email profile}
     restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: 3000
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:3001}
+      NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
+      NEXT_PUBLIC_COGNITO_DOMAIN: ${NEXT_PUBLIC_COGNITO_DOMAIN:-}
+      NEXT_PUBLIC_COGNITO_CLIENT_ID: ${NEXT_PUBLIC_COGNITO_CLIENT_ID:-}
+      NEXT_PUBLIC_COGNITO_REDIRECT_URI: ${NEXT_PUBLIC_COGNITO_REDIRECT_URI:-http://localhost:3000/auth/callback}
+      NEXT_PUBLIC_COGNITO_LOGOUT_URI: ${NEXT_PUBLIC_COGNITO_LOGOUT_URI:-http://localhost:3000/login}
+      NEXT_PUBLIC_COGNITO_SCOPE: ${NEXT_PUBLIC_COGNITO_SCOPE:-openid email profile}
     ports:
       - "3000:3000"
     depends_on:

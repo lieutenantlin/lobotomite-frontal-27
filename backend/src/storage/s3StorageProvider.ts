@@ -12,7 +12,11 @@ export class S3StorageProvider implements StorageProvider {
       region: config.aws.region,
       credentials:
         config.aws.accessKeyId && config.aws.secretAccessKey
-          ? { accessKeyId: config.aws.accessKeyId, secretAccessKey: config.aws.secretAccessKey }
+          ? {
+              accessKeyId: config.aws.accessKeyId,
+              secretAccessKey: config.aws.secretAccessKey,
+              sessionToken: config.aws.sessionToken,
+            }
           : undefined,
     });
     this.bucket = config.aws.bucket;
