@@ -54,7 +54,7 @@ export default function MapPage() {
   }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid gap-4 xl:grid-cols-[340px_minmax(0,1fr)] animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
       <Card className="surface rounded-[2rem] border-0 xl:sticky xl:top-4 xl:h-fit">
         <CardHeader>
           <p className="eyebrow">Map filters</p>
@@ -129,7 +129,7 @@ export default function MapPage() {
                 <Link
                   key={marker.id}
                   href={`/samples/${marker.id}`}
-                  className="rounded-[1.5rem] border border-border/60 bg-background/55 p-4 hover:border-primary/40"
+                  className="rounded-[1.5rem] border border-border/60 bg-background/55 p-4 hover:border-primary/50 transition-colors duration-200"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold">{marker.sampleId}</p>
