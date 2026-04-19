@@ -11,13 +11,13 @@ The product theme in the codebase is "Aqua Graph": devices ingest sample measure
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           Aqua Graph Platform                          │
+│                           Aqua Graph Platform                           │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  ┌─────────────┐    ┌──────────────┐    ┌─────────────────────────┐  │
-│  │   iPhone    │    │  Arduino UNO  │    │      Backend API        │  │
-│  │   (Camera)  │───▶│  (Edge AI)   │───▶│   (Fastify + Prisma)    │  │
-│  └─────────────┘    └──────────────┘    └───────────┬─────────────┘  │
+│  ┌─────────────┐    ┌──────────────┐    ┌─────────────────────────┐     │
+│  │   iPhone    │    │  Arduino UNO │    │      Backend API        │     │
+│  │   (Camera)  │───▶│  (Edge AI)   │───▶│   (Fastify + Prisma)    │     │
+│  └─────────────┘    └──────────────┘    └───────────┬─────────────┘     │
 │                                                       │                 │
 │                                                       ▼                 │
 │                                              ┌─────────────────────┐    │
@@ -30,12 +30,12 @@ The product theme in the codebase is "Aqua Graph": devices ingest sample measure
 │                                              │   (Local or S3)     │    │
 │                                              └─────────────────────┘    │
 │                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐   │
-│  │                         Frontend (Next.js)                      │   │
-│  │  ┌──────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐  │   │
-│  │  │Dashboard │ │  Map   │ │Samples │ │Devices │ │   Admin    │  │   │
-│  │  └──────────┘ └────────┘ └────────┘ └────────┘ └────────────┘  │   │
-│  └─────────────────────────────────────────────────────────────────┘   │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                         Frontend (Next.js)                      │   │
+│   │  ┌──────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐   │   │
+│   │  │Dashboard │ │  Map   │ │Samples │ │Devices │ │   Admin    │   │   │
+│   │  └──────────┘ └────────┘ └────────┘ └────────┘ └────────────┘   │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -105,9 +105,6 @@ The product theme in the codebase is "Aqua Graph": devices ingest sample measure
 ## Repository Layout
 
 ```
-.
-├── .claude/                  # Claude Code configuration
-│   └── CLAUDE.md             # OMC agent orchestration rules
 ├── backend/                  # Fastify API server
 │   ├── prisma/
 │   │   ├── schema.prisma     # Database schema
@@ -256,8 +253,3 @@ The frontend client contains fallback logic for a few endpoints that are not ful
 - admin audit log handling both `/admin/audit-log` and `/admin/audit-logs`
 
 That means the application is resilient during development, but the docs should be read as describing the current implementation, not a finished public API contract.
-
-## Additional documentation
-
-- [backend/README.md](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/backend/README.md)
-- [frontend/README.md](/home/mori/Dev/datahacks-2026/lobotomite-frontal-27/frontend/README.md)
