@@ -312,10 +312,9 @@ export async function handler(event: ApiGatewayEvent): Promise<ApiGatewayResult>
     }
 
     if (method === 'POST' && path === '/ingest/sample') {
-      const identity = requireAuth(event);
       const body = validatedBody(ingestSampleBody, event);
-      const sample = await upsertIngestedSample(body, identity.id);
-      await logAuditEvent(identity.id, 'sample.ingest', 'sample', sample.id, {
+      const sample = await upsertIngestedSample(body, null);
+      await logAuditEvent(null, 'sample.ingest', 'sample', sample.id, {
         deviceId: body.deviceId,
         via: 'rest',
       });

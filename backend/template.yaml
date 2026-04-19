@@ -189,6 +189,8 @@ Resources:
             ApiId: !Ref HttpApi
             Path: /ingest/sample
             Method: POST
+            Auth:
+              Authorizer: NONE
         Samples:
           Type: HttpApi
           Properties:
