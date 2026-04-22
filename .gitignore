@@ -42,3 +42,4 @@ samconfig.toml
 .omx/
 .claude/
 .sisyphus/
+docs/
