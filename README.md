@@ -82,6 +82,25 @@ In AWS mode:
    `waterquality/devices/+/samples`
 4. The IoT Rule invokes the ingest Lambda, which validates and stores sample/device data.
 
+## Environment Data Integration
+
+The platform integrates NOAA environmental datasets to provide context for water quality measurements:
+
+### Ocean Current Data
+
+- **Endpoint**: `GET /velocity?lat=X&lon=Y`
+- **Source**: CUGN (Coastal Youth Innovation Network) velocity dataset
+- **Displays**: Current speed (cm/s) and direction (degrees) in the Ocean Current card
+
+### Marine Microplastics Concentration
+
+- **Endpoint**: `GET /concentration?lat=X&lon=Y`
+- **Source**: NOAA Marine Microplastics dataset (NCEI Accession 211008)
+- **Displays**: Concentration class and measurement (pieces/m³) in the Ocean Current card
+- **Classes**: Very Low, Low, Medium, High (color-coded: green, yellow, red)
+
+Both datasets are displayed in the Ocean Current card on the dashboard, providing environmental context for microplastic sample measurements.
+
 ## Tech Stack
 
 ### Frontend
